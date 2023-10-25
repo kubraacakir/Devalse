@@ -1,87 +1,43 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
+import { IsletmeService } from "../services/IsletmeService";
 
-export default class Categories extends Component {
-  state = { activeItem: "" };
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+export default function Categories() {
+  const service = new IsletmeService();
+  const [state, setState] = "";
+  const [categories, setCategories] = useState(null);
+  const handleItemClick = (name) => setState(name);
 
-  render() {
-    const { activeItem } = this.state;
+  async function categoryGetir() {
+    let response = await service.getAllCategory();
+    setCategories(response.data);
+  }
+
+  useEffect(() => {
+    categoryGetir();
+  }, []);
+
+  if (categories === null) {
+    return null;
+  } else {
     return (
       <div>
-        <Menu pointing vertical>
-          <Menu.Item
-            name="Metin"
-            active={activeItem === "Metin"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Karakter"
-            active={activeItem === "Karakter"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Restoran"
-            active={activeItem === "Restoran"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Kafe"
-            active={activeItem === "Kafe"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Müzik"
-            active={activeItem === "Müzik"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Alışveriş"
-            active={activeItem === "Alışveriş"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Proje"
-            active={activeItem === "Proje"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Yönlendirme"
-            active={activeItem === "Yönlendirme"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Tabela"
-            active={activeItem === "Tabela"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/"
-          />
-          <Menu.Item
-            name="Ürünlerimiz"
-            active={activeItem === "Ürünlerimiz"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/urunler"
-          />
-        </Menu>
+        {categories.map((category) => {
+          return (
+            <div>
+              <Menu pointing vertical>
+                <Menu.Item
+                  name={category.name}
+                  active={state === category.name}
+                  onClick={handleItemClick}
+                  as={Link}
+                  to="/"
+                />
+              </Menu>
+            </div>
+          );
+        })}
       </div>
     );
   }
